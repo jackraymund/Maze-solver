@@ -1,5 +1,5 @@
-REST API jest w index.php, a w httacces jest przekierowanie do niego.
-Możemy sprawdzić poziom 5 poprzez rest_test.html
+REST API jest w index.php, a w httacces znajduje się przekierowanie do niego.
+5 poziom możemy sprawdzić poprzez rest_test.html
 
 Pojedynczo maze_level1/2/3/4.php
-Lub 1, 2, 3, 4 poziom na większym labiryncie
+Lub 1, 2, 3, 4 poziom na większym labiryncie poprzez big_maze_test.php

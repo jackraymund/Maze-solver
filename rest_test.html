@@ -1,48 +1,46 @@
 <html>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="js/jquery.min.js"></script>
 <script type = "text/javascript">
 function createNewMazeAndReturnId()
-    {
-	var $returnValue;
-	var $queryData = 
-	  { 
-	  maze:
-		[
-		  [1,1,1,1,1],
-		  [1,0,0,0,0],
-		  [1,0,1,0,1],
-		  [1,0,1,1,1]
-		],
-	  entrance: [1,3]
-	  };
-	
-	$.ajax
-	  ({
-	  async: false,
-	  type: "POST",
-	  url: "maze",
-	  data: $queryData
-	  })
-	  .success(function( msg ) 
-	    {
-		var maze = jQuery.parseJSON(msg);
-		$returnValue =  maze;
-	    })
-	  .fail(function() 
-	    {
-		$returnValue =  false;
-	    });
-	return $returnValue;
-		
+  {
+  var $returnValue;
+  var $queryData = 
+	{ 
+	maze:
+	  [
+		[1,1,1,1,1],
+		[1,0,0,0,0],
+		[1,0,1,0,1],
+		[1,0,1,1,1]
+	  ],
+	entrance: [1,3]
+	};
+  $.ajax
+	({
+	async: false,
+	type: "POST",
+	url: "maze",
+	data: $queryData
+	})
+  .success(function( msg ) 
+	{
+	var maze = jQuery.parseJSON(msg);
+	$returnValue =  maze;
+	})
+  .fail(function() 
+	{
+	$returnValue =  false;
+	});
+  return $returnValue;
 	}
-function sendGetRequestAndReturnJson(aDirectory, aData = false)
+function sendGetRequestAndReturnJson(aDirectory)
   {
   var $returnValue;
   $.ajax
 	({
 	  async: false,
 	  type: "GET",
-	  url: "maze/"+aMazeId+"/describe"
+	  url: aDirectory
 	})
 	.success(function( msg ) 
 	  {
@@ -56,98 +54,60 @@ function sendGetRequestAndReturnJson(aDirectory, aData = false)
 	return $returnValue;
   }
 function getWallsAndCorridors(aMazeId)
-    {
-	var $returnValue;
-	$.ajax
-	  ({
-	  async: false,
-	  type: "GET",
-	  url: "maze/"+aMazeId+"/describe"
-	  })
-	  .success(function( msg ) 
-	    {
-		var maze = jQuery.parseJSON(msg);
-		$returnValue =  maze;
-	    })
-	  .fail(function() 
-	    {
-		$returnValue =  false;
-	    });
-	return $returnValue;
-		
-	}
+  {
+  return sendGetRequestAndReturnJson("maze/"+aMazeId+"/describe");
+  }
 function getExitCords(aMazeId)
-    {
-	var $returnValue;
-	$.ajax
-	  ({
-	  async: false,
-	  type: "GET",
-	  url: "maze/"+aMazeId+"/exit"
-	  })
-	  .success(function( msg ) 
-	    {
-		var maze = jQuery.parseJSON(msg);
-		$returnValue =  maze;
-	    })
-	  .fail(function() 
-	    {
-		$returnValue =  false;
-	    });
-	return $returnValue;
-		
-	}
-	
+  {
+  return sendGetRequestAndReturnJson("maze/"+aMazeId+"/exit");
+  }
 function getBuildMazePrice(aMazeId, wallPrice, corridorPrice, torchPrice)
-    {
-	var $returnValue;
-	var $queryData = 
-	  { 
-	  wallPrice: wallPrice,
-	  corridorPrice: corridorPrice,
-	  torchPrice: torchPrice 
-	  };
-	$.ajax
-	  ({
-	  async: false,
-	  type: "GET",
-	  url: "maze/"+aMazeId+"/quotation",
-	  data: $queryData
+  {
+  var $returnValue;
+  var $queryData = 
+	{ 
+	wallPrice: wallPrice,
+	corridorPrice: corridorPrice,
+	torchPrice: torchPrice 
+	};
+  $.ajax
+	({
+	async: false,
+	type: "GET",
+	url: "maze/"+aMazeId+"/quotation",
+	data: $queryData
+	})
+	.success(function( msg ) 
+	  {
+	  var maze = jQuery.parseJSON(msg);
+	  $returnValue =  maze;
 	  })
-	  .success(function( msg ) 
-	    {
-		var maze = jQuery.parseJSON(msg);
-		$returnValue =  maze;
-	    })
-	  .fail(function() 
-	    {
-		$returnValue =  false;
-	    });
+	.fail(function() 
+	  {
+	  $returnValue =  false;
+	  });
 	return $returnValue;
-		
-	}
+  }
 function getMazeExitPath(aMazeId)
-    {
-	var $returnValue;
-
-	$.ajax
-	  ({
-	  async: false,
-	  type: "GET",
-	  url: "maze/"+aMazeId+"/path",
-	  })
-	  .success(function( msg ) 
-	    {
-		//var maze = jQuery.parseJSON(msg);
-		$returnValue =  msg;
-	    })
-	  .fail(function() 
-	    {
-		$returnValue =  false;
-	    });
-	return $returnValue;
-		
-	}
+  {
+  var $returnValue;
+  $.ajax
+	({
+	async: false,
+	type: "GET",
+	url: "maze/"+aMazeId+"/path",
+	})
+  .success(function( msg ) 
+	{
+	var maze = jQuery.parseJSON(msg);
+	$returnValue =  maze;
+	})
+  .fail(function() 
+	{
+	$returnValue =  false;
+	});
+  return $returnValue;
+  }
 	
 $(function()
   {
@@ -194,7 +154,7 @@ $(function()
 	var maze = getMazeExitPath(newCreatedMazeId);
    if(maze != false)
       {
-	  responseBody.append('<br>Maze exit path: '+ maze);
+	  responseBody.append('<br>Maze exit path: '+ maze.path);
 	  //var maze = jQuery.parseJSON(maze);
 	  }
 	else
@@ -205,18 +165,8 @@ $(function()
   });
 
 </script>
-<body style="padding-top: 10px;">
-<form class="form-horizontal">
-  <div class="form-group">
-	<div class="col-sm-offset-1 col-sm-2">
-	  <button id="create_maze" type="button" class="btn btn-default">Create new maze and execute all levels with it</button>
-	</div>
-  </div>
-  <div class="form-group">
-	<div id="create_maze_response" class="col-sm-offset-1 col-sm-2">
-	 
-	</div>
-  </div>
-</form>
+<body>
+  <button id="create_maze" type="button">Create new maze and execute all levels with it</button>
+  <div id="create_maze_response"></div>
 </body>
 </html>
