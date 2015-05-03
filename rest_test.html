@@ -1,0 +1,222 @@
+<html>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type = "text/javascript">
+function createNewMazeAndReturnId()
+    {
+	var $returnValue;
+	var $queryData = 
+	  { 
+	  maze:
+		[
+		  [1,1,1,1,1],
+		  [1,0,0,0,0],
+		  [1,0,1,0,1],
+		  [1,0,1,1,1]
+		],
+	  entrance: [1,3]
+	  };
+	
+	$.ajax
+	  ({
+	  async: false,
+	  type: "POST",
+	  url: "maze",
+	  data: $queryData
+	  })
+	  .success(function( msg ) 
+	    {
+		var maze = jQuery.parseJSON(msg);
+		$returnValue =  maze;
+	    })
+	  .fail(function() 
+	    {
+		$returnValue =  false;
+	    });
+	return $returnValue;
+		
+	}
+function sendGetRequestAndReturnJson(aDirectory, aData = false)
+  {
+  var $returnValue;
+  $.ajax
+	({
+	  async: false,
+	  type: "GET",
+	  url: "maze/"+aMazeId+"/describe"
+	})
+	.success(function( msg ) 
+	  {
+	  var maze = jQuery.parseJSON(msg);
+	  $returnValue =  maze;
+	  })
+	.fail(function() 
+	  {
+	  $returnValue =  false;
+	  });
+	return $returnValue;
+  }
+function getWallsAndCorridors(aMazeId)
+    {
+	var $returnValue;
+	$.ajax
+	  ({
+	  async: false,
+	  type: "GET",
+	  url: "maze/"+aMazeId+"/describe"
+	  })
+	  .success(function( msg ) 
+	    {
+		var maze = jQuery.parseJSON(msg);
+		$returnValue =  maze;
+	    })
+	  .fail(function() 
+	    {
+		$returnValue =  false;
+	    });
+	return $returnValue;
+		
+	}
+function getExitCords(aMazeId)
+    {
+	var $returnValue;
+	$.ajax
+	  ({
+	  async: false,
+	  type: "GET",
+	  url: "maze/"+aMazeId+"/exit"
+	  })
+	  .success(function( msg ) 
+	    {
+		var maze = jQuery.parseJSON(msg);
+		$returnValue =  maze;
+	    })
+	  .fail(function() 
+	    {
+		$returnValue =  false;
+	    });
+	return $returnValue;
+		
+	}
+	
+function getBuildMazePrice(aMazeId, wallPrice, corridorPrice, torchPrice)
+    {
+	var $returnValue;
+	var $queryData = 
+	  { 
+	  wallPrice: wallPrice,
+	  corridorPrice: corridorPrice,
+	  torchPrice: torchPrice 
+	  };
+	$.ajax
+	  ({
+	  async: false,
+	  type: "GET",
+	  url: "maze/"+aMazeId+"/quotation",
+	  data: $queryData
+	  })
+	  .success(function( msg ) 
+	    {
+		var maze = jQuery.parseJSON(msg);
+		$returnValue =  maze;
+	    })
+	  .fail(function() 
+	    {
+		$returnValue =  false;
+	    });
+	return $returnValue;
+		
+	}
+function getMazeExitPath(aMazeId)
+    {
+	var $returnValue;
+
+	$.ajax
+	  ({
+	  async: false,
+	  type: "GET",
+	  url: "maze/"+aMazeId+"/path",
+	  })
+	  .success(function( msg ) 
+	    {
+		//var maze = jQuery.parseJSON(msg);
+		$returnValue =  msg;
+	    })
+	  .fail(function() 
+	    {
+		$returnValue =  false;
+	    });
+	return $returnValue;
+		
+	}
+	
+$(function()
+  {
+  $('#create_maze').on('click', function () 
+    {
+	var responseBody = $('#create_maze_response');
+	//clean log
+	responseBody.html('');
+	
+	
+	//create maze
+	var maze = createNewMazeAndReturnId();
+	var newCreatedMazeId = maze.mazeId;
+	if(maze != false)
+	  responseBody.append('New maze id: ' + newCreatedMazeId);
+	else
+	  alert("error at creating maze, please check http code" );
+	
+	 
+	//getting walls and maze corridors 
+	var maze = getWallsAndCorridors(newCreatedMazeId);
+	if(maze != false)
+	  responseBody.append('<br>Walls: ' + maze.walls + ' corridors: ' + maze.corridors);
+	else
+	  alert("error at getting walls and maze corridors, please check http code" );
+	  
+	//getting exit cords
+	var maze = getExitCords(newCreatedMazeId);
+	if(maze != false)
+	  responseBody.append('<br>Exit cords: x:' + maze.exit[0] + ' y: ' + maze.exit[1]);
+	else
+	  alert("error at getting exit cords, please check http code" );
+	  
+
+	
+   //get build maze price
+	var maze = getBuildMazePrice(newCreatedMazeId,10.5,10.3,10.7);
+   if(maze != false)
+	  responseBody.append('<br>Build maze Price: '+maze.price);
+	else
+	  alert("error at getting build maze price, please check http code" );
+	  
+	//get maze exit path
+	var maze = getMazeExitPath(newCreatedMazeId);
+   if(maze != false)
+      {
+	  responseBody.append('<br>Maze exit path: '+ maze);
+	  //var maze = jQuery.parseJSON(maze);
+	  }
+	else
+	  alert("error at getting maze exit path, please check http code" );
+	  
+	});
+
+  });
+
+</script>
+<body style="padding-top: 10px;">
+<form class="form-horizontal">
+  <div class="form-group">
+	<div class="col-sm-offset-1 col-sm-2">
+	  <button id="create_maze" type="button" class="btn btn-default">Create new maze and execute all levels with it</button>
+	</div>
+  </div>
+  <div class="form-group">
+	<div id="create_maze_response" class="col-sm-offset-1 col-sm-2">
+	 
+	</div>
+  </div>
+</form>
+</body>
+</html>
