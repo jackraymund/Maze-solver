@@ -3,7 +3,7 @@
 class MazeSearcher
   {
   const DEBUG_MODE = false;
-  //maximum steps backward on one dead end
+  //TODO maximum steps backward on one dead end
   const BACKWARD_SEARCH_STEPS = 50;
   
   private $yAxisArrayLargestIndexValue,
@@ -65,7 +65,6 @@ class MazeSearcher
 	  $actualPositionY = $actualCorridor['cords'][count($actualCorridor['cords'])-1]['y'];
 	  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
 	  $ways = $this->getAvalibleWays($actualPositionX, $actualPositionY);
-	  
 	  if($actualCorridor['aim'] === '')
 		  {
 		  if(isset($ways['left']))
@@ -141,12 +140,9 @@ class MazeSearcher
 		  }
 		
 		}
-		
 		if($ways === false)
 		  {
-		  //add corridor
 		  $corridorsArray[] = $actualCorridor;
-		  //start researching quened corridors
 		  if(count($this->quenedCorridors) > 0)
 		    {
 			$actualCorridor = $this->quenedCorridors[count($this->quenedCorridors)-1];
@@ -155,13 +151,12 @@ class MazeSearcher
 			}
 		  else
 		    {
-			//delete repeartings corridors
+			$bannedId = array();
 			$arrayRange = count($corridorsArray);
 			for($i = 0;$i < $arrayRange;$i++)
 			  {
-			  $isTwinsSectionsExist = (isset($corridorsArray[$i]['destinationSectionId']));
-			  $isOnlyOneCordsAtSection = (count($corridorsArray[$i]['cords']) == 1)
-			  if($isTwinsSectionsExist or $isOnlyOneCordsAtSection)
+			  if((isset($corridorsArray[$i]['destinationSectionId']) and !isset($bannedId[$corridorsArray[$i]['destinationSectionId']]))
+			  or count($corridorsArray[$i]['cords']) == 1)
 			    {
 				unset($corridorsArray[$i]);
 				continue;
@@ -174,12 +169,12 @@ class MazeSearcher
 			  {
 			  $corridorsArray = array_values($corridorsArray);
 			  }
+			// var_dump($corridorsArray);
 			return count($corridorsArray);
 			}
 		  }
 		elseif(isset($ways[$actualCorridor['aim']]))
 		  {
-		  //adds cords to actual corridor
 		  if(self::DEBUG_MODE) echo 'Add cords to corridor ', $actualCorridor['aim'], ' ',$actualPositionX,' ', $actualPositionY, "<br>";
 		  $actualCorridor['cords'][] = $ways[$actualCorridor['aim']];
 		  
@@ -216,12 +211,16 @@ class MazeSearcher
 	  $xToCheck = $aCorridorsArray[$i]['cords'][0]['x'];
 	  $yToCheck = $aCorridorsArray[$i]['cords'][0]['y'];
 	  for($z = 0;$z < $arrayRange;$z++)
+		{
 		if($i != $z)
+		  {
 		  if($xToCheck === $aCorridorsArray[$z]['cords'][0]['x'] and $yToCheck === $aCorridorsArray[$z]['cords'][0]['y'] )
 		    {
 			unset($aCorridorsArray[$z]);
 		    return true;
 			}
+		  }
+		}
 	  
 	  }
 	  
@@ -461,6 +460,9 @@ class MazeSearcher
   private function checkifIsAvalibeStepOnRight($aActualPositionX, $aActualPositionY)
     {
 	$isAvalibleAreaToMakeStepOnRight = (($aActualPositionX < $this->xAxisArrayLargestIndexValue));
+	
+	
+	
 	if( $isAvalibleAreaToMakeStepOnRight )
 	  {
 	  $ifAreaIsfield = ($this->mazeStructure[$aActualPositionY][$aActualPositionX+1] === 0);
@@ -488,6 +490,8 @@ class MazeSearcher
   private function checkifIsAvalibeStepOnBottom($aActualPositionX, $aActualPositionY)
     {
 	$isAvalibleAreaToMakeStepOnBottom = ($aActualPositionY < $this->yAxisArrayLargestIndexValue);
+	
+	  
 	if( $isAvalibleAreaToMakeStepOnBottom )
 	  {
 	  $ifAreaIsfield = ($this->mazeStructure[$aActualPositionY+1][$aActualPositionX] === 0);
