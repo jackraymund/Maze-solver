@@ -3,10 +3,9 @@ ob_start();
 if(ob_get_level() === 0)
   throw new Exception("Please activate output buffering",500);
 
-$RESTManager = new RESTManager;
-
 try
   {
+  $RESTManager = new RESTManager;
   if($RESTManager->checkIsAvalibleMazeRewrite() === false)
 	  throw new Exception("There isn't request to maze",400);
   
@@ -46,7 +45,7 @@ try
 	  {
 	  $mazeStructure = $RESTManager->getMazeStructure();
 	  $entranceInput = $RESTManager->getMazeEntrance();
-	  
+	   
 	  $maze = new MazeAnalyzer;
 	  $maze->setAndValidMazeStructure($mazeStructure);
 	  $maze->setUpEntrance($entranceInput[0],$entranceInput[1]);

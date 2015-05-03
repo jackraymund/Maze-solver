@@ -1,6 +1,6 @@
 <?php
-class PDOobject
-  {
+class PDOobject 
+  { 
   const DBHOST = 'localhost';
   const DBLOGIN = 'xxx';
   const DBPASS = 'xxx';

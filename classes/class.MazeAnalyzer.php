@@ -1,12 +1,11 @@
 <?php
 class MazeAnalyzer extends MazeSearcher
-  {
+  { 
   private $walls = NULL,
 		  $fields = NULL,
 		  $numberOfCorridors = NULL;
   protected $mazeStructure = NULL;
   
-  //level 3
   public function getNumberOfCorridors()
     {
 	if($this->numberOfCorridors !== NULL)
@@ -43,7 +42,6 @@ class MazeAnalyzer extends MazeSearcher
 	if($isNotFloatVal or $isNotIntVal)
 	  throw new Exception("Price isn't float or int.",400);
 	}
-  //level 2
   public function getExitCords()
     {
 	$roadToExit = $this->findExitOfMaze();
@@ -52,7 +50,6 @@ class MazeAnalyzer extends MazeSearcher
 	return $exitCords;
 	}
   
-  //level 1
   public function getNumberOfWalls()
     {
 	return $this->walls;
@@ -99,12 +96,6 @@ class MazeAnalyzer extends MazeSearcher
 	MazeValidator::validEntranceOrThrowException($this->mazeStructure, $aX, $aY);
 	$this->entranceCordX = $aX;
 	$this->entranceCordY = $aY;
-	}
-  function __destruct()
-	{
-	$mazeStructure = NULL;
-	$walls = NULL; 
-	$fields = NULL;
 	}
   }
   

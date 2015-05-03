@@ -2,13 +2,11 @@
 class Rewrite
   {
   public $args = array();
-  //TODO
   public function searchForScriptDirectoryAndDeleteWrongArgs($aFolderName)
     {
 	$rewriteSize = count($this->args);
 	//delete get params from last arg
 	$this->args[$rewriteSize-1] = strtok($this->args[$rewriteSize-1], '?');
-	
 	
 	for($i = 0;$i < $rewriteSize;$i++)
 	  {

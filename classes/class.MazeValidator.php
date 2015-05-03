@@ -1,13 +1,9 @@
 <?php
-
 class MazeValidator
   {
-  
-  //zd2
   public static function validEntranceOrThrowException($aMazeStructure, $aX, $aY)
 	{
 	$isCordsareInMazeStructure = isset($aMazeStructure[$aY][$aX]);
-	
 	if($isCordsareInMazeStructure)
 	  {
 	  $isEntranceOnWall = $aMazeStructure[$aY][$aX] == 1;
@@ -22,9 +18,6 @@ class MazeValidator
 
 	return true;
 	}
-	 
-	 
-  //zd1
    static public $mazeStructure = NULL;
    public static function validMazeOrThrowException($aMazeStructure)
     {
@@ -33,7 +26,7 @@ class MazeValidator
 	self::checkIfFieldsAreValidOrThrowException();
 	self::checkMazeSizeOrThrowException();
 	self::checkIfMazeIsSquareOrThrowException();
-	}
+	} 
   private static function checkIfMazeStructureExistOrThrowException()
     {
 	if(self::$mazeStructure == NULL)
@@ -55,8 +48,6 @@ class MazeValidator
 	if(!$isXAxisIsGreaterThanTwo and !$isYAxisIsGreaterThanTwo)
 	  throw new Exception('Maze is too small!',400);
 	}
-  
-	
   private static function checkIfMazeIsSquareOrThrowException()
     {
 	$firstXAxisCount = count(self::$mazeStructure[0]);
@@ -64,7 +55,6 @@ class MazeValidator
 	  if($firstXAxisCount != count($xAxisArray))
 		throw new Exception("Maze isn't square!",400);
 	}
-	
   private static function checkIfFieldsAreValidOrThrowException()
     {
 	foreach(self::$mazeStructure as $xAxisArray)
