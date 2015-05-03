@@ -6,7 +6,6 @@ class MazeAnalyzer extends MazeSearcher
 		  $numberOfCorridors = NULL;
   protected $mazeStructure = NULL;
   
-  //level 3
   public function getNumberOfCorridors()
     {
 	if($this->numberOfCorridors !== NULL)
@@ -14,6 +13,7 @@ class MazeAnalyzer extends MazeSearcher
 	else
 	  throw new Exception("No data about number of corridors in maze.",400);
 	}
+	
   public function getCostOfCreating($aWallPrice, $aFieldPrice, $aTorchPrice)
     {
 	$this->checkIfPriceIsNumberOrThrowException($aWallPrice);
@@ -32,6 +32,7 @@ class MazeAnalyzer extends MazeSearcher
 	  $overAllTorchPrice = $this->numberOfCorridors*$aTorchPrice;
 	return round($overAllTorchPrice+$overAllWallPrice+$overAllFieldPrice, 2);
 	}
+	
   private function checkIfPriceIsNumberOrThrowException($aValue)
     {
 	$floatVal = floatval($aValue);
@@ -43,7 +44,7 @@ class MazeAnalyzer extends MazeSearcher
 	if($isNotFloatVal or $isNotIntVal)
 	  throw new Exception("Price isn't float or int.",400);
 	}
-  //level 2
+
   public function getExitCords()
     {
 	$roadToExit = $this->findExitOfMaze();
@@ -52,7 +53,6 @@ class MazeAnalyzer extends MazeSearcher
 	return $exitCords;
 	}
   
-  //level 1
   public function getNumberOfWalls()
     {
 	return $this->walls;
@@ -99,12 +99,6 @@ class MazeAnalyzer extends MazeSearcher
 	MazeValidator::validEntranceOrThrowException($this->mazeStructure, $aX, $aY);
 	$this->entranceCordX = $aX;
 	$this->entranceCordY = $aY;
-	}
-  function __destruct()
-	{
-	$mazeStructure = NULL;
-	$walls = NULL; 
-	$fields = NULL;
 	}
   }
   

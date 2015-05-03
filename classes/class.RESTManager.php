@@ -1,5 +1,4 @@
 <?php
-
 class RESTManager extends PDOobject
   {
   public $rewriteArgs;
@@ -83,11 +82,13 @@ class RESTManager extends PDOobject
 	}
   public function getMazeStructure()
     {
+	//call first isValidMazeId() !
 	$queryFetch = $this->getLastQueryFetch();
 	return json_decode($queryFetch['maze_body']);
 	}
  public function getMazeEntrance()
     {
+	//call first isValidMazeId() !
 	$queryFetch = $this->getLastQueryFetch();
 	return json_decode($queryFetch['maze_entrance']);
 	} 
