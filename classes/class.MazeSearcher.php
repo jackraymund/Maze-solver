@@ -18,6 +18,7 @@ class MazeSearcher
 		    $entranceCordY;	  
   public function __construct()
     {
+	$this->drawDebugMessage('<pre>');
 	$this->entranceCordX = NULL;
 	$this->entranceCordY = NULL;
 	$this->yAxisArrayLargestIndexValue = NULL;
@@ -28,19 +29,24 @@ class MazeSearcher
 	$this->traceToExitArray = NULL;
 	$this->quenedCorridors = NULL;
     } 
-
+  private function drawDebugMessage($aMsg)
+    {
+	if(self::DEBUG_MODE)
+	  echo $aMsg .PHP_EOL;
+	}
   protected function getMazeNumberOfCorridors()
     {
-	if(self::DEBUG_MODE) echo '<pre>';
+	//check if needed variables are set
 	$this->checkIfMazeStructureExistOrThrowException();
+	$this->checkIfEntranceCordsExistOrThrowException();
+	
 	$this->setAxisesLargestIndexValues();
 	
-	$this->findEntranceIfNotExistOrThrowException();
-	
-	$this->checkedfields = array();
 	$corridorsArray = array();
-
-	if(self::DEBUG_MODE) echo 'Creating Corridor'.PHP_EOL;
+	$this->checkedfields = array();
+	
+    $this->drawDebugMessage('Creating first corridor');
+	//setting first corridor
 	$actualCorridor = array
 	  (
 	  'aim' => '',
@@ -62,85 +68,89 @@ class MazeSearcher
 	  $actualPositionX = $actualCorridor['cords'][count($actualCorridor['cords'])-1]['x'];
 	  $actualPositionY = $actualCorridor['cords'][count($actualCorridor['cords'])-1]['y'];
 	  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
-	  $ways = $this->getAvalibleWays($actualPositionX, $actualPositionY);
+	  $avalibleWays = $this->getAvalibleWays($actualPositionX, $actualPositionY);
 	  
 	  if($actualCorridor['aim'] === '')
-		  {
-		  if(isset($ways['left']))
-		    $actualCorridor['aim'] = 'left';
-		  elseif(isset($ways['right']))
-			$actualCorridor['aim'] = 'right';
-	      elseif(isset($ways['bottom']))
-			$actualCorridor['aim'] = 'bottom';
-		  elseif(isset($ways['top']))
-			$actualCorridor['aim'] = 'top';
-		  }
-	
-	  if(count($ways) > 1)
 		{
-		if(isset($ways['left']) and isset($ways['right']))
+		if(isset($avalibleWays['left']))
+		  $actualCorridor['aim'] = 'left';
+		elseif(isset($avalibleWays['right']))
+		  $actualCorridor['aim'] = 'right';
+		elseif(isset($avalibleWays['bottom']))
+		  $actualCorridor['aim'] = 'bottom';
+		elseif(isset($avalibleWays['top']))
+		  $actualCorridor['aim'] = 'top';
+		}
+	  
+	  $ifAvalibleMoreWaysThanOne = (count($avalibleWays) > 1);
+	  if($ifAvalibleMoreWaysThanOne)
+		{
+		$isAvalibleHorizontalWay = (isset($avalibleWays['left']) and isset($avalibleWays['right']));
+		if($isAvalibleHorizontalWay)
 		  {
-		  if($actualCorridor['aim'] !== 'right' and $actualCorridor['aim'] !== 'left')
+		  $isActualCorridorWayAreVertical = ($actualCorridor['aim'] == 'top' or $actualCorridor['aim'] == 'bottom');
+		  if($isActualCorridorWayAreVertical)
 			{
 			$uniqId = uniqid();
 			//to prevent repeart unique id
 			usleep(1);
-		  
+		    //appending both ways to quene
 			$this->addToQueneCorridor('left', $actualPositionX, $actualPositionY,$uniqId);
 			$this->addToQueneCorridor('right', $actualPositionX, $actualPositionY,$uniqId);
 			$this->addToCheckedfieldList($actualPositionX, $actualPositionY);
-		  
-			if(self::DEBUG_MODE) echo 'Add to Quene(left/right) ', $actualPositionX,' ', $actualPositionY,"<br>";
+			
+		    $this->drawDebugMessage('Add to Quene(left/right) '. $actualPositionX.' '. $actualPositionY);
 			}
 		  }
-		elseif($actualCorridor['aim'] !== 'left' and isset($ways['left']))
+		elseif($actualCorridor['aim'] !== 'left' and isset($avalibleWays['left']))
 		  {
 		  $this->addToQueneCorridor('left', $actualPositionX, $actualPositionY);
 		  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
-			
-		  if(self::DEBUG_MODE) echo 'Add to Quene(left) ', $actualPositionX,' ', $actualPositionY,"<br>";
+		  
+		  $this->drawDebugMessage('Add to Quene(left) '. $actualPositionX.' '. $actualPositionY);
 		  }
-		elseif($actualCorridor['aim'] !== 'right' and isset($ways['right']))
+		elseif($actualCorridor['aim'] !== 'right' and isset($avalibleWays['right']))
 		  {
 		  $this->addToQueneCorridor('right', $actualPositionX, $actualPositionY);
 		  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
-			
-		  if(self::DEBUG_MODE) echo 'Add to Quene(right) ', $actualPositionX,' ', $actualPositionY,"<br>";
-		  }
 		  
-		if(isset($ways['top']) and isset($ways['bottom']))
+		  $this->drawDebugMessage('Add to Quene(right) '. $actualPositionX.' '. $actualPositionY);
+		  }
+		$isAvalibleVerticalWay = (isset($avalibleWays['top']) and isset($avalibleWays['bottom']));  
+		if($isAvalibleVerticalWay)
 		  {
-		  if($actualCorridor['aim'] !== 'top' and $actualCorridor['aim'] !== 'bottom')
+		  $isActualCorridorWayAreHorizontal = ($actualCorridor['aim'] == 'left' and $actualCorridor['aim'] == 'right');
+		  if($isActualCorridorWayAreHorizontal)
 			{
 			$uniqId = uniqid();
 			//to prevent repeart unique id
 			usleep(1);
-
+			//appending both ways to quene
 			$this->addToQueneCorridor('top', $actualPositionX, $actualPositionY,$uniqId);
 			$this->addToQueneCorridor('bottom', $actualPositionX, $actualPositionY,$uniqId);
 			$this->addToCheckedfieldList($actualPositionX, $actualPositionY);
 
-			if(self::DEBUG_MODE) echo 'Add to Quene(top/bottom) ', $actualPositionX,' ', $actualPositionY,"<br>";
+			$this->drawDebugMessage('Add to Quene(top/bottom) '. $actualPositionX.' '. $actualPositionY);
 			}
 		  }
-		elseif($actualCorridor['aim'] !== 'top' and isset($ways['top']))
+		elseif($actualCorridor['aim'] !== 'top' and isset($avalibleWays['top']))
 		  {
 		  $this->addToQueneCorridor('top', $actualPositionX, $actualPositionY); 
 		  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
 			
-		  if(self::DEBUG_MODE) echo 'Add to Quene(top) ', $actualPositionX,' ', $actualPositionY,"<br>";
+		  $this->drawDebugMessage('Add to Quene(top) '. $actualPositionX.' '. $actualPositionY);
 		  }			  
-		elseif($actualCorridor['aim'] !== 'bottom' and isset($ways['bottom']))
+		elseif($actualCorridor['aim'] !== 'bottom' and isset($avalibleWays['bottom']))
 		  {
 		  $this->addToQueneCorridor('bottom', $actualPositionX, $actualPositionY); 
 		  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
-			  
-		  if(self::DEBUG_MODE) echo 'Add to Quene(bottom) ', $actualPositionX,' ', $actualPositionY,"<br>";
+		  
+		  $this->drawDebugMessage('Add to Quene(bottom) '. $actualPositionX.' '. $actualPositionY); 
 		  }
 		
 		}
-		
-		if($ways === false)
+		$isNoAvalibleWays = $avalibleWays === false;
+		if($isNoAvalibleWays)
 		  {
 		  //add corridor
 		  $corridorsArray[] = $actualCorridor;
@@ -151,8 +161,10 @@ class MazeSearcher
 			unset($this->quenedCorridors[count($this->quenedCorridors)-1]);
 			$this->quenedCorridors = array_values($this->quenedCorridors);
 			}
+		  //is no avalible quened corridors
 		  else
 		    {
+			
 			//delete repeartings corridors
 			$arrayRange = count($corridorsArray);
 			for($i = 0;$i < $arrayRange;$i++)
@@ -173,19 +185,20 @@ class MazeSearcher
 			  $corridorsArray = array_values($corridorsArray);
 			  }
 			return count($corridorsArray);
+			
 			}
 		  }
-		elseif(isset($ways[$actualCorridor['aim']]))
+		elseif(isset($avalibleWays[$actualCorridor['aim']]))
 		  {
 		  //adds cords to actual corridor
-		  if(self::DEBUG_MODE) echo 'Add cords to corridor ', $actualCorridor['aim'], ' ',$actualPositionX,' ', $actualPositionY, "<br>";
-		  $actualCorridor['cords'][] = $ways[$actualCorridor['aim']];
+		  $this->drawDebugMessage('Add cords to corridor ' . $actualCorridor['aim'] . ' ' . $actualPositionX . ' ' . $actualPositionY); 
+		  $actualCorridor['cords'][] = $avalibleWays[$actualCorridor['aim']];
 		  
 		  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
 		  }
-		elseif(!isset($ways[$actualCorridor['aim']]))
+		elseif(!isset($avalibleWays[$actualCorridor['aim']]))
 		  {
-		  if(self::DEBUG_MODE) echo 'Make new corridor ' ,$actualPositionX,' ', $actualPositionY, "<br>";
+		  $this->drawDebugMessage('Creating new corridor ' . $actualPositionX . ' ' . $actualPositionY); 
 		  $this->addToCheckedfieldList($actualPositionX, $actualPositionY);
 		  $corridorsArray[] = $actualCorridor;
 		  $actualCorridor = array
@@ -369,7 +382,6 @@ class MazeSearcher
   	
   public function findExitOfMaze()
 	{
-	if(self::DEBUG_MODE) echo '<pre>';
 	$this->checkIfMazeStructureExistOrThrowException();
 	$this->checkIfEntranceCordsExistOrThrowException();
 	$this->setAxisesLargestIndexValues();
@@ -395,7 +407,7 @@ class MazeSearcher
 	  {
 	  if(!$this->oneStepSearchForEntrance($actualPositionX, $actualPositionY))
 	    {
-		if(self::DEBUG_MODE) echo 'black listed ' . $actualPositionX .' '. $actualPositionY .PHP_EOL;
+		$this->drawDebugMessage('Black listed ' . $actualPositionX . ' ' . $actualPositionY); 
 		
 		//add to blackList
 		$this->addToBlackList($actualPositionX,$actualPositionY);
@@ -403,7 +415,7 @@ class MazeSearcher
 		//make step backward
 		if($this->actualStepsBackward < self::BACKWARD_SEARCH_STEPS and count($this->traceToExitArray) > 0)
 		  {
-		  if(self::DEBUG_MODE) echo 'make step backward'.PHP_EOL;
+		  $this->drawDebugMessage('Make step backward'); 
 		  //make step backward
 		  $actualPositionX = $this->traceToExitArray[count($this->traceToExitArray)-2][0];
 		  $actualPositionY= $this->traceToExitArray[count($this->traceToExitArray)-2][1];
@@ -431,7 +443,7 @@ class MazeSearcher
 	  }
 	if($this->checkIfCordsAreExit($actualPositionX, $actualPositionY))
 	  {
-	  if(self::DEBUG_MODE) echo 'Found exit at '.$actualPositionX . ' '.$actualPositionY . PHP_EOL;
+	  $this->drawDebugMessage('Found exit at '.$actualPositionX . ' '.$actualPositionY);
 	  return $this->traceToExitArray;
 	  }
 	}
@@ -514,7 +526,7 @@ class MazeSearcher
 	  $this->addCordToCheckedfieldAndTraceList($aActualPositionX+1, $aActualPositionY);
 	  //makes step
 	  $aActualPositionX++;
-	  if(self::DEBUG_MODE) echo 'Found right' . PHP_EOL;
+	  $this->drawDebugMessage('Found right');
 	  return true;
 	  }
 	//left
@@ -526,7 +538,7 @@ class MazeSearcher
 	  $this->addCordToCheckedfieldAndTraceList($aActualPositionX-1, $aActualPositionY);
 	  //makes step
 	  $aActualPositionX--;
-	  if(self::DEBUG_MODE) echo 'Found left' . PHP_EOL;
+	  $this->drawDebugMessage('Found left');
 	  return true;
 	  }
 	//top 
@@ -538,7 +550,7 @@ class MazeSearcher
 	  $this->addCordToCheckedfieldAndTraceList($aActualPositionX, $aActualPositionY-1);
 	  //makes step
 	  $aActualPositionY--;
-	  if(self::DEBUG_MODE) echo 'Found top' . PHP_EOL;
+	  $this->drawDebugMessage('Found top');
 	  return true;
 	  }
 	//bottom
@@ -550,7 +562,7 @@ class MazeSearcher
 	  $this->addCordToCheckedfieldAndTraceList($aActualPositionX, $aActualPositionY+1);
 	  //makes step
 	  $aActualPositionY++;
-	  if(self::DEBUG_MODE) echo 'Found bottom' . PHP_EOL;
+	  $this->drawDebugMessage('Found bottom');
 	  return true;
 	  }
 	

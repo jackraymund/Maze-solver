@@ -2,8 +2,8 @@
 class PDOobject 
   { 
   const DBHOST = 'localhost';
-  const DBLOGIN = 'xxx';
-  const DBPASS = 'xxx';
+  const DBLOGIN = 'xx';
+  const DBPASS = 'xx';
   const DBNAME = 'allegro';
   const MAZETABLE = 'allegro_maze';
   

@@ -11,6 +11,10 @@ class RESTManager extends PDOobject
 	
 	$this->connectToDataBase();
 	}
+  public static function sendHttpError($aCode, $aMessage)
+    {
+	header('HTTP/1.1 '.$aCode.' '.$aMessage);
+	}
   public function json_encode($arrayToEncode)
     {
 	return json_encode($arrayToEncode,JSON_NUMERIC_CHECK);

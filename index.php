@@ -2,7 +2,12 @@
 ob_start();
 if(ob_get_level() === 0)
   throw new Exception("Please activate output buffering",500);
-
+  
+function __autoload($className) 
+  {
+  include 'classes/class.'.$className . '.php';
+  }
+  
 try
   {
   $RESTManager = new RESTManager;
@@ -97,12 +102,8 @@ try
   }
 catch (Exception $e) 
   {
-  ob_end_clean();//if not expected exception comment this line  
-  header('HTTP/1.1 '.$e->getCode().' '.$e->getMessage());
+  ob_end_clean();
+  RESTManager::sendHttpError($e->getCode(), $e->getMessage());
   }	 
-function __autoload($className) 
-  {
-  include 'classes/class.'.$className . '.php';
-  }
 
 ?>
