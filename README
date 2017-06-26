@@ -1,4 +1,3 @@
-Rest APi are redirected to index.php through httaccess
-We can check REST application at test/rest_test.html
-Also each level at test folder 
-or all levels on bigger maze at big_maze_test.php
+Rest API are redirected to index.php through httaccess
+Testing REST application is at test/rest_test.html
+Final test file is at test/big_maze_test.php
