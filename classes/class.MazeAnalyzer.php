@@ -2,17 +2,17 @@
 class MazeAnalyzer extends MazeSearcher
   {
   private $walls = NULL,
-		  $fields = NULL,
-		  $numberOfCorridors = NULL;
+    $fields = NULL,
+    $numberOfCorridors = NULL;
   protected $mazeStructure = NULL;
 
   public function getNumberOfCorridors()
     {
     if($this->numberOfCorridors !== NULL)
-	  return $this->numberOfCorridors;
-	else
-	  throw new Exception("No data about number of corridors in maze.",400);
-	}
+      return $this->numberOfCorridors;
+    else
+      throw new Exception("No data about number of corridors in maze.",400);
+    }
   public function getCostOfCreating($aWallPrice, $aFieldPrice, $aTorchPrice)
     {
 	$this->checkIfPriceIsNumberOrThrowException($aWallPrice);
