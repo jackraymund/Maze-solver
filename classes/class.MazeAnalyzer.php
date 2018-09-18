@@ -15,6 +15,7 @@ class MazeAnalyzer extends MazeSearcher
     }
   public function getCostOfCreating($aWallPrice, $aFieldPrice, $aTorchPrice)
     {
+<<<<<<< HEAD
     $this->checkIfPriceIsNumberOrThrowException($aWallPrice);
     $this->checkIfPriceIsNumberOrThrowException($aFieldPrice);
     $this->checkIfPriceIsNumberOrThrowException($aTorchPrice);
@@ -40,6 +41,33 @@ class MazeAnalyzer extends MazeSearcher
     $isNotIntVal = $intVal === 0;
 
     if($isNotFloatVal or $isNotIntVal)
+=======
+	$this->checkIfPriceIsNumberOrThrowException($aWallPrice);
+	$this->checkIfPriceIsNumberOrThrowException($aFieldPrice);
+	$this->checkIfPriceIsNumberOrThrowException($aTorchPrice);
+
+	$this->countWallsAndfields();
+	$overAllWallPrice = $this->walls * $aWallPrice;
+	$overAllFieldPrice = $this->fields * $aFieldPrice;
+
+	$this->numberOfCorridors = $this->getMazeNumberOfCorridors();
+
+	if($this->numberOfCorridors % 2 == 1)
+	  $overAllTorchPrice = (($this->numberOfCorridors-1)/2)*$aTorchPrice;
+	else
+	  $overAllTorchPrice = $this->numberOfCorridors*$aTorchPrice;
+	return round($overAllTorchPrice+$overAllWallPrice+$overAllFieldPrice, 2);
+	}
+  private function checkIfPriceIsNumberOrThrowException($aValue)
+    {
+	$floatVal = floatval($aValue);
+	$isNotFloatVal = $floatVal === 0;
+
+	$intVal = intval($aValue);
+	$isNotIntVal = $intVal === 0;
+
+	if($isNotFloatVal or $isNotIntVal)
+>>>>>>> 0ec079c987f685fa9c9aae28723cb6d33ed3f8aa
 	  throw new Exception("Price isn't float or int.",400);
 	}
   public function getExitCords()
