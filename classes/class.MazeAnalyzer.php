@@ -1,44 +1,44 @@
 <?php
 class MazeAnalyzer extends MazeSearcher
-  { 
+  {
   private $walls = NULL,
-		  $fields = NULL,
-		  $numberOfCorridors = NULL;
+    $fields = NULL,
+    $numberOfCorridors = NULL;
   protected $mazeStructure = NULL;
-  
+
   public function getNumberOfCorridors()
     {
-	if($this->numberOfCorridors !== NULL)
-	  return $this->numberOfCorridors;
-	else
-	  throw new Exception("No data about number of corridors in maze.",400);
-	}
+    if($this->numberOfCorridors !== NULL)
+      return $this->numberOfCorridors;
+    else
+      throw new Exception("No data about number of corridors in maze.",400);
+    }
   public function getCostOfCreating($aWallPrice, $aFieldPrice, $aTorchPrice)
     {
-	$this->checkIfPriceIsNumberOrThrowException($aWallPrice);
-	$this->checkIfPriceIsNumberOrThrowException($aFieldPrice);
-	$this->checkIfPriceIsNumberOrThrowException($aTorchPrice);
-	
-	$this->countWallsAndfields();
-	$overAllWallPrice = $this->walls * $aWallPrice;
-	$overAllFieldPrice = $this->fields * $aFieldPrice;
-	
-	$this->numberOfCorridors = $this->getMazeNumberOfCorridors();
-	
-	if($this->numberOfCorridors % 2 == 1)
-	  $overAllTorchPrice = (($this->numberOfCorridors-1)/2)*$aTorchPrice;
-	else
-	  $overAllTorchPrice = $this->numberOfCorridors*$aTorchPrice;
-	return round($overAllTorchPrice+$overAllWallPrice+$overAllFieldPrice, 2);
-	}
+    $this->checkIfPriceIsNumberOrThrowException($aWallPrice);
+    $this->checkIfPriceIsNumberOrThrowException($aFieldPrice);
+    $this->checkIfPriceIsNumberOrThrowException($aTorchPrice);
+
+    $this->countWallsAndfields();
+    $overAllWallPrice = $this->walls * $aWallPrice;
+    $overAllFieldPrice = $this->fields * $aFieldPrice;
+
+    $this->numberOfCorridors = $this->getMazeNumberOfCorridors();
+
+    if($this->numberOfCorridors % 2 == 1)
+      $overAllTorchPrice = (($this->numberOfCorridors-1)/2)*$aTorchPrice;
+    else
+      $overAllTorchPrice = $this->numberOfCorridors*$aTorchPrice;
+    return round($overAllTorchPrice+$overAllWallPrice+$overAllFieldPrice, 2);
+    }
   private function checkIfPriceIsNumberOrThrowException($aValue)
     {
-	$floatVal = floatval($aValue);
-	$isNotFloatVal = $floatVal === 0;
-	
-	$intVal = intval($aValue);
-	$isNotIntVal = $intVal === 0;
-	
+    $floatVal = floatval($aValue);
+    $isNotFloatVal = $floatVal === 0;
+
+    $intVal = intval($aValue);
+    $isNotIntVal = $intVal === 0;
+
 	if($isNotFloatVal or $isNotIntVal)
 	  throw new Exception("Price isn't float or int.",400);
 	}
@@ -49,7 +49,7 @@ class MazeAnalyzer extends MazeSearcher
 	$exitCords = array($roadToExit[$lastfieldPosition][0],$roadToExit[$lastfieldPosition][1]);
 	return $exitCords;
 	}
-  
+
   public function getNumberOfWalls()
     {
 	return $this->walls;
@@ -74,7 +74,7 @@ class MazeAnalyzer extends MazeSearcher
 		  $numberOffields++;
 		}
 	  }
-	
+
 	$this->walls = $numberOfWalls;
 	$this->fields = $numberOffields;
 	}
@@ -98,4 +98,3 @@ class MazeAnalyzer extends MazeSearcher
 	$this->entranceCordY = $aY;
 	}
   }
-  
