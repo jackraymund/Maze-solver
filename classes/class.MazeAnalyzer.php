@@ -48,7 +48,7 @@ class MazeAnalyzer extends MazeSearcher
     $lastfieldPosition = count($roadToExit)-1;
     $exitCords = array($roadToExit[$lastfieldPosition][0],$roadToExit[$lastfieldPosition][1]);
     return $exitCords;
-  	}
+    }
 
   public function getNumberOfWalls()
     {
