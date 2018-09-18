@@ -39,7 +39,7 @@ class MazeAnalyzer extends MazeSearcher
     $intVal = intval($aValue);
     $isNotIntVal = $intVal === 0;
 
-	if($isNotFloatVal or $isNotIntVal)
+    if($isNotFloatVal or $isNotIntVal)
 	  throw new Exception("Price isn't float or int.",400);
 	}
   public function getExitCords()
