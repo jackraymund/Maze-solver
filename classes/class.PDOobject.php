@@ -13,7 +13,7 @@ class PDOobject
     {
     // Conntect and return PDO object.
     try
-  	  {
+      {
       $this->PDO = new PDO
         (
         'mysql:host='. self::DBHOST .';port=3306;dbname='. self::DBNAME,
@@ -27,7 +27,7 @@ class PDOobject
       $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       }
     catch(PDOException $ex)
-	    {
+      {
       throw new Exception("Cannot connect to db",500);
       }
     }
@@ -35,7 +35,7 @@ class PDOobject
   private function PDOBindArray(&$poStatement, &$paArray)
     {
     foreach ($paArray as $k=>$v)
-	    {
+      {
       $poStatement->bindValue(':'.$k,$v);
       }
     }
@@ -43,39 +43,39 @@ class PDOobject
   public function runQuery($aStatement, $aData)
     {
     try
-  	  {
+      {
         $query = $this->PDO->prepare($aStatement);
         $this->PDOBindArray($query, $aData);
         $result = $query->execute();
 
-  	  $this->lastStatmentQuery = $query;
-  	  return $result;
-  	  }
-	  catch(PDOException $ex)
-	    {
-	    throw new Exception("Cannot execute mysql query",400);
+      $this->lastStatmentQuery = $query;
+      return $result;
+      }
+    catch(PDOException $ex)
+      {
+      throw new Exception("Cannot execute mysql query",400);
       }
     }
 
   public function fetchLastQuery()
     {
-  	$this->lastQueryFetch = $this->lastStatmentQuery->fetch();
-  	return $this->lastQueryFetch;
-  	}
+    $this->lastQueryFetch = $this->lastStatmentQuery->fetch();
+    return $this->lastQueryFetch;
+    }
 
   public function getLastQueryFetch()
     {
-  	return $this->lastQueryFetch;
-  	}
+    return $this->lastQueryFetch;
+    }
 
   public function getCountOfRecordsReturnedFromLastQuery()
     {
-  	return $this->lastStatmentQuery->rowCount();
-  	}
+    return $this->lastStatmentQuery->rowCount();
+    }
 
   public function returnLastInsertedId()
     {
-  	return $this->PDO->lastInsertId();
-  	}
+    return $this->PDO->lastInsertId();
+    }
   }
 ?>

@@ -12,90 +12,90 @@ try
   {
   $RESTManager = new RESTManager;
   if($RESTManager->checkIsAvalibleMazeRewrite() === false)
-	  throw new Exception("There isn't request to maze",400);
+    throw new Exception("There isn't request to maze",400);
 
   if($RESTManager->checkIfRequestIsPOST())
     {
-  	if($RESTManager->isValidNewMazeDataStructure())
-  	  {
-  	  $mazeId = $RESTManager->createNewMazeAndGetId();
-  	  echo $RESTManager->json_encode(array("mazeId" => $mazeId));
-  	  }
-	  }
+    if($RESTManager->isValidNewMazeDataStructure())
+      {
+      $mazeId = $RESTManager->createNewMazeAndGetId();
+      echo $RESTManager->json_encode(array("mazeId" => $mazeId));
+      }
+    }
 
   if($RESTManager->checkIfRequestIsGET())
     {
-  	if($RESTManager->isValidMazeId() === false)
-  	  throw new Exception("Wrong maze id",400);
+    if($RESTManager->isValidMazeId() === false)
+      throw new Exception("Wrong maze id",400);
 
-  	if($RESTManager->isRequestForDescribe())
-  	  {
-  	  $mazeStructure = $RESTManager->getMazeStructure();
+    if($RESTManager->isRequestForDescribe())
+      {
+      $mazeStructure = $RESTManager->getMazeStructure();
 
-  	  $maze = new MazeAnalyzer;
-  	  $maze->setAndValidMazeStructure($mazeStructure);
-  	  $maze->countWallsAndFields();
+      $maze = new MazeAnalyzer;
+      $maze->setAndValidMazeStructure($mazeStructure);
+      $maze->countWallsAndFields();
 
-  	  echo $RESTManager->json_encode(
-  	    array
-    		  (
-    		  'walls' => $maze->getNumberOfWalls(),
-    		  'corridors' => $maze->getNumberOfFields()
-    		  )
-  		  );
-  	  }
+      echo $RESTManager->json_encode(
+        array
+          (
+          'walls' => $maze->getNumberOfWalls(),
+          'corridors' => $maze->getNumberOfFields()
+          )
+        );
+      }
 
-  	elseif($RESTManager->isRequestForExitCords())
-  	  {
-  	  $mazeStructure = $RESTManager->getMazeStructure();
-  	  $entranceInput = $RESTManager->getMazeEntrance();
+    elseif($RESTManager->isRequestForExitCords())
+      {
+      $mazeStructure = $RESTManager->getMazeStructure();
+      $entranceInput = $RESTManager->getMazeEntrance();
 
-  	  $maze = new MazeAnalyzer;
-  	  $maze->setAndValidMazeStructure($mazeStructure);
-  	  $maze->setUpEntrance($entranceInput[0],$entranceInput[1]);
-  	  $exitCord = $maze->getExitCords();
+      $maze = new MazeAnalyzer;
+      $maze->setAndValidMazeStructure($mazeStructure);
+      $maze->setUpEntrance($entranceInput[0],$entranceInput[1]);
+      $exitCord = $maze->getExitCords();
 
-  	  echo $RESTManager->json_encode(
-    		array
-    		  (
-    		  'exit' =>
-    		    array
-    		    (
-    		    $exitCord[0],
-      			$exitCord[1]
-      			)
-    		  )
-  		  );
-  	  }
-  	elseif($RESTManager->isRequestForBuildMazePrice())
-  	  {
-  	  $RESTManager->validBuildMazePriceRequest();
+      echo $RESTManager->json_encode(
+        array
+          (
+          'exit' =>
+            array
+            (
+            $exitCord[0],
+            $exitCord[1]
+            )
+          )
+        );
+      }
+    elseif($RESTManager->isRequestForBuildMazePrice())
+      {
+      $RESTManager->validBuildMazePriceRequest();
 
-  	  $mazeStructure = $RESTManager->getMazeStructure();
-  	  $entranceInput = $RESTManager->getMazeEntrance();
-  	  $prices = $RESTManager->getBuildPrices();
+      $mazeStructure = $RESTManager->getMazeStructure();
+      $entranceInput = $RESTManager->getMazeEntrance();
+      $prices = $RESTManager->getBuildPrices();
 
-  	  $maze = new MazeAnalyzer;
-  	  $maze->setAndValidMazeStructure($mazeStructure);
-  	  $maze->setUpEntrance($entranceInput[0],$entranceInput[1]);
-  	  $mazePrice = $maze->getCostOfCreating($prices['wallPrice'], $prices['corridorPrice'], $prices['torchPrice']);
+      $maze = new MazeAnalyzer;
+      $maze->setAndValidMazeStructure($mazeStructure);
+      $maze->setUpEntrance($entranceInput[0],$entranceInput[1]);
+      $mazePrice = $maze->getCostOfCreating($prices['wallPrice'], $prices['corridorPrice'], $prices['torchPrice']);
 
-  	  echo $RESTManager->json_encode(array('price' => $mazePrice));
-  	  }
+      echo $RESTManager->json_encode(array('price' => $mazePrice));
+      }
 
-  	elseif($RESTManager->isRequestForPath())
-  	  {
-  	  $mazeStructure = $RESTManager->getMazeStructure();
-  	  $entranceInput = $RESTManager->getMazeEntrance();
+    elseif($RESTManager->isRequestForPath())
+      {
+      $mazeStructure = $RESTManager->getMazeStructure();
+      $entranceInput = $RESTManager->getMazeEntrance();
 
-  	  $maze = new MazeAnalyzer;
-  	  $maze->setAndValidMazeStructure($mazeStructure);
-  	  $maze->setUpEntrance($entranceInput[0],$entranceInput[1]);
-  	  $roadToExit =  $maze->findExitOfMaze();
+      $maze = new MazeAnalyzer;
+      $maze->setAndValidMazeStructure($mazeStructure);
+      $maze->setUpEntrance($entranceInput[0],$entranceInput[1]);
+      $roadToExit =  $maze->findExitOfMaze();
 
-  	  echo $RESTManager->json_encode(array('path' => $roadToExit));
-  	  }
-  	}
+      echo $RESTManager->json_encode(array('path' => $roadToExit));
+      }
+    }
 
   }
 catch (Exception $e)
